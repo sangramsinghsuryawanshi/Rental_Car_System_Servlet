@@ -32,19 +32,18 @@ public class ServletLogin extends HttpServlet {
             Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/org", "root", "12345");
 
             // Query to check if the user exists with the provided username and password
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM User");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM User where name=? and pass=?");
+            ps.setString(1, name);
+            ps.setString(2, pass);
             ResultSet rs = ps.executeQuery();
 
-            while(rs.next()) 
+            if(rs.next()) 
             {
-            	if(name==rs.getString(1) && pass == rs.getString(2))
-            	{
-            		pw.print("<script>alert('Login Successful...!');window.location.replace('login.html');</script>");
-            	}
-            	else
-            	{
-            		pw.print("<script>alert('Login Failed...! Username or Password is incorrect.');window.location.replace('index.html');</script>");
-            	}
+            	pw.print("<script>alert('Login Successful...!');window.location.replace('login.html');</script>");
+            }
+            else
+            {
+            	pw.print("<script>alert('Login Failed...! Username or Password is incorrect.');window.location.replace('login.html');</script>");
             }
 
             con.close();
